@@ -5,12 +5,16 @@ import gameengine.app.GameSetting;
 import gameengine.entities.GameObject;
 import gameengine.entities.builder.BuilderGameObject;
 import gameengine.entities.texture.Texture;
+import gameengine.physic.Point2D;
+import gameengine.render.Camera;
 import gameengine.world.Level;
 import javafx.geometry.Dimension2D;
-import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
+
 
 public class RimWorldGame extends GameApp{
-
+	GameObject gc;
+	
 	@Override
 	public void initSetting(GameSetting setting) {
 		setting.setWidth(720);
@@ -32,23 +36,33 @@ public class RimWorldGame extends GameApp{
 		}*/
 				
 		GameObject gameObject = BuilderGameObject.createGameObject()
-				.at(new Point2D(1, 1))
+				.at(new Point2D(1.0, 1.0))
 				.with(new Dimension2D(32, 32))
-				.with(new Texture());
+				.with(new Texture("57"));
 		
 		GameObject gameObject2 = BuilderGameObject.createGameObject()
-				.at(new Point2D(2, 2))
-				.with(new Dimension2D(64, 32))
-				.with(new Texture())
+				.at(new Point2D(2.0, 2.0))
+				.with(new Dimension2D(32, 32))
+				.with(new Texture("57"))
 				.is("Test");
+		gc = gameObject;
 		l.addGameObject(gameObject, gameObject2);
 		
 		getGameWorld().setLevel(l);
 		
 	}
 	@Override
+	public void initCamera(Camera camera) {
+		camera.setPosition(gc.getPosition());
+		camera.setGameObjectBinded(gc);
+	}
+	@Override
 	public void initTest() {
-		getManager().drawScene(getGameWorld());
+		getManager().getScene().setOnKeyPressed((event) ->{
+			if(event.getCode().equals(KeyCode.Z)) {
+				getManager().getCamera().setZoom(getManager().getCamera().getZoom()+0.1);
+			}
+		});
 	}
 	public static void main(String[] args) {
 		launch(args);
