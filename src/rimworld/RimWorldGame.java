@@ -10,11 +10,15 @@ import gameengine.entities.texture.Texture;
 import gameengine.input.UserEvent;
 import gameengine.particule.Emitter;
 import gameengine.particule.FireEmitter;
+import gameengine.physic.Dimension3D;
 import gameengine.physic.Point2D;
+import gameengine.physic.collision.HandleCollision;
+import gameengine.physic.collision.aabb.AABB;
 import gameengine.render.Camera;
 import gameengine.world.Level;
 import gameengine.world.builder.BuilderLevel;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
 
 
@@ -29,36 +33,7 @@ public class RimWorldGame extends GameApp {
 	}
 	@Override
 	public void initLevel() {
-		Level l = BuilderLevel.buildLevel("test", "lvl1.txt",1);
-		
-		/*for (int i = 0; i < 0; i++) {
-			for (int j = 0; j < 0; j++) {
-				GameObject gameObject = BuilderGameObject.createGameObject()
-						.at(new Point2D(i, j))
-						.with(new Dimension2D(32, 32))
-						.with(new Texture());
-				l.addGameObject(gameObject);
-			}
-		}*/
-
-//		GameObject gameObject = BuilderGameObject.createGameObject()
-//				.at(new Point2D(1.0, 1.0))
-//				.with(new Dimension2D(32, 32))
-//				.with(new Texture("57"))
-//				.with(new Point2D(0.0,0.0));
-//		
-//		GameObject gameObject2 = BuilderGameObject.createGameObject()
-//				.at(new Point2D(2.0, 2.0))
-//				.with(new Dimension2D(32, 32))
-//				.with(new Texture("57"))
-//				.is("Test");
-//		gc = gameObject;
-//		System.out.println(l.getLstGameObject());
-//		l.addGameObject(gameObject, gameObject2);
-		
-		
-		
-		
+		Level l = BuilderLevel.buildLevel("test", "lvl1.txt",1);		
 		getGameWorld().setLevel(l);
 		
 	}
@@ -70,28 +45,32 @@ public class RimWorldGame extends GameApp {
 			public GameObject createGameObject() {
 				
 				return BuilderGameObject.createGameObject()
-						.with(new Dimension2D(32, 32))
+						.with(new Dimension3D(32.0, 32.0, 0.0))
 						.with(new Texture("57"))
 						.is("Test")
-						.with(0);
+						.with(1.0);
 			}
 		}));
+		Dimension3D d1 = new Dimension3D(32.0, 32.0,32.0);
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("1",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
 				
 				return BuilderGameObject.createGameObject()
-						.with(new Dimension2D(32, 32))
+						.with(d1)
 						.with(new Texture("cactus"))
-						.is("Test")
-						.with(4);
+						.is("test")
+						.with(4.0)
+						.with(new AABB(new Point3D(0.0, 0.0, 0.0),d1));
 			}
 		}));
+		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
 		gc = BuilderGameObject.createGameObject()
-				.with(new Dimension2D(32, 32))
+				.with(d)
 				.with(new Texture("bonjour"))
-				.is("Perso")
-				.with(4);
+				.is("personnage")
+				.with(4.0)
+				.with(new AABB(new Point3D(0.0, 0.0, 0.0),d));
 				
 				
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
@@ -105,7 +84,7 @@ public class RimWorldGame extends GameApp {
 	@Override
 	public void initParticle() {
 		Emitter feu = new FireEmitter();
-		feu.at(new Point2D(1.0,1.0)).with(8).with(new Point2D(0.0,0.0));
+		feu.at(new Point2D(1.0,1.0)).with(8.0).with(new Point2D(0.0,0.0));
 		System.out.println(getManager());
 		getManager().getParticuleEngine().addEmitter(feu);
 		
@@ -202,5 +181,21 @@ public class RimWorldGame extends GameApp {
 			}
 		}, KeyCode.Z);
 	}
-
+	@Override
+	public void initCollision() {
+		getGameEngine().getCm().addHandleCollision(new HandleCollision("test","personnage") {
+			@Override
+			public void onCollisionEnd(GameObject g1, GameObject g2) {
+				System.out.println("EN");
+			}
+			@Override
+			public void onCollisionBegin(GameObject g1, GameObject g2) {
+				System.out.println("IN");
+			}
+			@Override
+			public void onCollision(GameObject g1, GameObject g2) {
+				System.out.println("REST");
+			}
+		});
+	}
 }
