@@ -8,6 +8,8 @@ import gameengine.entities.builder.BuilderGameObjectFactory;
 import gameengine.entities.builder.WrapperGameObject;
 import gameengine.entities.texture.Texture;
 import gameengine.input.UserEvent;
+import gameengine.particule.Emitter;
+import gameengine.particule.FireEmitter;
 import gameengine.physic.Point2D;
 import gameengine.render.Camera;
 import gameengine.world.Level;
@@ -21,8 +23,8 @@ public class RimWorldGame extends GameApp {
 	
 	@Override
 	public void initSetting(GameSetting setting) {
-		setting.setWidth(720);
-		setting.setHeight(480);
+		setting.setWidth(1720);
+		setting.setHeight(880);
 		setting.setTitle("Hello World!");
 	}
 	@Override
@@ -54,6 +56,9 @@ public class RimWorldGame extends GameApp {
 //		System.out.println(l.getLstGameObject());
 //		l.addGameObject(gameObject, gameObject2);
 		
+		
+		
+		
 		getGameWorld().setLevel(l);
 		
 	}
@@ -67,10 +72,10 @@ public class RimWorldGame extends GameApp {
 				return BuilderGameObject.createGameObject()
 						.with(new Dimension2D(32, 32))
 						.with(new Texture("57"))
-						.is("Test");
+						.is("Test")
+						.with(0);
 			}
 		}));
-		
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("1",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
@@ -78,100 +83,124 @@ public class RimWorldGame extends GameApp {
 				return BuilderGameObject.createGameObject()
 						.with(new Dimension2D(32, 32))
 						.with(new Texture("cactus"))
-						.is("Test");
+						.is("Test")
+						.with(4);
+			}
+		}));
+		gc = BuilderGameObject.createGameObject()
+				.with(new Dimension2D(32, 32))
+				.with(new Texture("bonjour"))
+				.is("Perso")
+				.with(4);
+				
+				
+		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
+			@Override
+			public GameObject createGameObject() {
+				
+				return gc;
 			}
 		}));
 	}
-	
+	@Override
+	public void initParticle() {
+		Emitter feu = new FireEmitter();
+		feu.at(new Point2D(1.0,1.0)).with(8).with(new Point2D(0.0,0.0));
+		System.out.println(getManager());
+		getManager().getParticuleEngine().addEmitter(feu);
+		
+	}
 	@Override
 	public void initCamera(Camera camera) {
-		gc = getGameWorld().getLevel().getLstGameObject().get(0);
 		camera.setPosition(gc.getPosition());
 		camera.setGameObjectBinded(gc);
 	}
 	@Override
 	public void initTest() {
-//		getManager().getScene().setOnKeyPressed((event) ->{
-//			if(event.getCode().equals(KeyCode.Z)) {
-//				getManager().getCamera().setZoom(getManager().getCamera().getZoom()+0.1);
-//			}
-//		});
 	}
 	public static void main(String[] args) {
 		launch(args);
 	}
 	@Override
 	public void initInput() {
-		getInput().addEvent(new UserEvent("gauche") {
-			
+		getInput().addEvent(new UserEvent("ZoomOut") {
 			@Override
 			public void onUpdate() {
-				gc.with(new Point2D(-0.05,0.0));
+				getManager().getCamera().setZoom(getManager().getCamera().getZoom()-0.1);
 			}
-			
 			@Override
 			public void onEnd() {
-				gc.with(new Point2D(0.0,0.0));
 			}
-			
 			@Override
 			public void onBegin() {
-				
+				getManager().getCamera().setZoom(getManager().getCamera().getZoom()-0.1);
+			}
+		}, KeyCode.SUBTRACT);
+		getInput().addEvent(new UserEvent("ZoomIn") {
+			@Override
+			public void onUpdate() {
+				getManager().getCamera().setZoom(getManager().getCamera().getZoom()+0.1);
+			}
+			@Override
+			public void onEnd() {
+			}
+			@Override
+			public void onBegin() {
+				getManager().getCamera().setZoom(getManager().getCamera().getZoom()+0.1);
+			}
+		}, KeyCode.ADD);
+		getInput().addEvent(new UserEvent("Left") {
+			@Override
+			public void onUpdate() {
+			}
+			@Override
+			public void onEnd() {
+				gc.getVelocity().sub(-0.05,0.0);
+			}
+			@Override
+			public void onBegin() {
+				gc.getVelocity().add(-0.05,0.0);
 			}
 		}, KeyCode.Q);
-		
-		getInput().addEvent(new UserEvent("reculer") {
-			
+		getInput().addEvent(new UserEvent("Down") {
 			@Override
 			public void onUpdate() {
-				gc.with(new Point2D(0.0,0.05));
 			}
-			
 			@Override
 			public void onEnd() {
-				gc.with(new Point2D(0.0,0.0));
+				gc.getVelocity().sub(0.0,0.05);
 			}
-			
 			@Override
 			public void onBegin() {
-				
+				gc.getVelocity().add(0.0,0.05);
 			}
 		}, KeyCode.S);
-		getInput().addEvent(new UserEvent("droite") {
-			
+		getInput().addEvent(new UserEvent("Right") {
 			@Override
 			public void onUpdate() {
-				gc.with(new Point2D(0.05,0.0));
 			}
-			
 			@Override
 			public void onEnd() {
-				gc.with(new Point2D(0.0,0.0));
+				gc.getVelocity().sub(0.05,0.0);
 			}
-			
 			@Override
 			public void onBegin() {
-				
+				gc.getVelocity().add(0.05,0.0);
 			}
 		}, KeyCode.D);
-		getInput().addEvent(new UserEvent("devant") {
-			
+		getInput().addEvent(new UserEvent("Up") {
 			@Override
 			public void onUpdate() {
-				gc.with(new Point2D(0.0,-0.05));
 			}
-			
 			@Override
 			public void onEnd() {
-				
+				gc.getVelocity().sub(0.0,-0.05);
 			}
-			
 			@Override
 			public void onBegin() {
-				
+				gc.getVelocity().add(0.0,-0.05);
 			}
 		}, KeyCode.Z);
-		
 	}
 
 }
