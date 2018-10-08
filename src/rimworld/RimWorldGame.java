@@ -49,7 +49,6 @@ public class RimWorldGame extends GameApp {
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("0",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
-				
 				return BuilderGameObject.createGameObject()
 						.with(new Dimension3D(32.0, 32.0, 0.0))
 						.with(new Texture("57"))
