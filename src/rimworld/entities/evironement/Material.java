@@ -22,6 +22,10 @@ public class Material extends GameObjectRimWorld {
 		surface = sur;
 		return this;
 	}
+	public Material set(int ll) {
+		this.lifeleft = ll;
+		return this;
+	}
 	
 	public int getLife() {
 		return life;

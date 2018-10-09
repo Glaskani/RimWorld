@@ -24,16 +24,18 @@ import gameengine.world.Level;
 import gameengine.world.builder.BuilderLevel;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
+import rimworld.entities.builder.BuilderEntities;
 import rimworld.entities.evironement.Material;
-import rimworld.entities.evironement.builder.BuilderMaterial;
+import rimworld.entities.playable.Personnage;
+import rimworld.entities.spec.Gear;
+import rimworld.entities.spec.ID;
 import rimworld.entities.spec.Surface;
-
+import rimworld.entities.spec.Type;
 
 public class RimWorldGame extends GameApp {
 	GameObject gc;
 	Emitter feu;
 	private static final Logger LOGGER = Logger.getGlobal();
-	
 	
 	@Override
 	public void initSetting(GameSetting setting) {
@@ -70,9 +72,12 @@ public class RimWorldGame extends GameApp {
 						.is("test")
 						.with(4.0)
 						.with(new AABB(new Point3D(0.0, 0.0, 0.0),d1))
-						.with(BuilderMaterial.createMaterial()
-								.with(20)
-								.with(Surface.WALL));
+						.with(BuilderEntities.createMaterial()
+								.with(20) //20 pv max
+								.set(2) //2 pv restant
+								.with(Surface.WALL)
+								.with(Type.GOLD)
+								);
 			}
 		}));
 		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
@@ -82,14 +87,15 @@ public class RimWorldGame extends GameApp {
 				.is("personnage")
 				.with(4.0)
 				.with(new AABB(new Point3D(0.0, 0.0, 0.0),d))
-				.with(BuilderMaterial.createMaterial()
-						.with(18));
-				
-				
+				.with(BuilderEntities.createPersonnage()
+						.with(new ID())
+						.with(new Gear())
+						.addRessource()
+						);
+		Personnage p = (Personnage) gc.getObject();
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
-				
 				return gc;
 			}
 		}));
@@ -97,8 +103,7 @@ public class RimWorldGame extends GameApp {
 	@Override
 	public void initParticle() {
 		feu = new FireEmitter();
-		feu.at(gc.getPosition()).with(8.0).with(new Point2D(0.0,0.0));		
-		
+		feu.at(gc.getPosition()).with(8.0).with(new Point2D(0.0,0.0));
 	}
 	@Override
 	public void initCamera(Camera camera) {
@@ -217,6 +222,7 @@ public class RimWorldGame extends GameApp {
 				System.out.println("IN");
 				getManager().getParticuleEngine().addEmitter(feu);
 				Material m = (Material) g1.getObject();
+				
 				System.out.println("dkjfhgfjdgkjdfhgkjdfhgkjdfhgkldhfkjghdfklghdfk"+m.getLife()+m.getSurface());
 			}
 			@Override
