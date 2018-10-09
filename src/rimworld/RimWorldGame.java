@@ -24,12 +24,16 @@ import gameengine.world.Level;
 import gameengine.world.builder.BuilderLevel;
 import javafx.geometry.Point3D;
 import javafx.scene.input.KeyCode;
+import rimworld.entities.evironement.Material;
+import rimworld.entities.evironement.builder.BuilderMaterial;
+import rimworld.entities.spec.Surface;
 
 
 public class RimWorldGame extends GameApp {
 	GameObject gc;
 	Emitter feu;
 	private static final Logger LOGGER = Logger.getGlobal();
+	
 	
 	@Override
 	public void initSetting(GameSetting setting) {
@@ -65,7 +69,10 @@ public class RimWorldGame extends GameApp {
 						.with(new Texture("cactus"))
 						.is("test")
 						.with(4.0)
-						.with(new AABB(new Point3D(0.0, 0.0, 0.0),d1));
+						.with(new AABB(new Point3D(0.0, 0.0, 0.0),d1))
+						.with(BuilderMaterial.createMaterial()
+								.with(20)
+								.with(Surface.WALL));
 			}
 		}));
 		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
@@ -74,7 +81,9 @@ public class RimWorldGame extends GameApp {
 				.with(new Texture("bonjour"))
 				.is("personnage")
 				.with(4.0)
-				.with(new AABB(new Point3D(0.0, 0.0, 0.0),d));
+				.with(new AABB(new Point3D(0.0, 0.0, 0.0),d))
+				.with(BuilderMaterial.createMaterial()
+						.with(18));
 				
 				
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
@@ -207,6 +216,8 @@ public class RimWorldGame extends GameApp {
 			public void onCollisionBegin(GameObject g1, GameObject g2) {
 				System.out.println("IN");
 				getManager().getParticuleEngine().addEmitter(feu);
+				Material m = (Material) g1.getObject();
+				System.out.println("dkjfhgfjdgkjdfhgkjdfhgkjdfhgkldhfkjghdfklghdfk"+m.getLife()+m.getSurface());
 			}
 			@Override
 			public void onCollision(GameObject g1, GameObject g2) {
