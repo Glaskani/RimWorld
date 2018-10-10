@@ -12,6 +12,8 @@ import gameengine.entities.builder.BuilderGameObject;
 import gameengine.entities.builder.BuilderGameObjectFactory;
 import gameengine.entities.builder.WrapperGameObject;
 import gameengine.entities.texture.Texture;
+import gameengine.ia.ManagerTask;
+import gameengine.ia.Task;
 import gameengine.input.UserEvent;
 import gameengine.particule.Emitter;
 import gameengine.particule.FireEmitter;
@@ -51,7 +53,7 @@ public class RimWorldGame extends GameApp {
 	}
 	
 	@Override
-	public void initGameObject() {
+	public void initGameObject(ManagerTask mt) {
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("0",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
@@ -80,6 +82,52 @@ public class RimWorldGame extends GameApp {
 								);
 			}
 		}));
+		Task t = new Task(getGameWorld()) {
+			@Override
+			public void onUpdate() { //4 0
+				GameObject go = this.getGameObject();
+				double whereX = go.getPosition().getX(); //4
+				double whereY = go.getPosition().getY();
+				double wantX = -8.0-0.05;
+				double wantY = 3.0;						
+				System.out.println("velo"+go.getVelocity());
+				if (whereX != wantX  && go.getVelocity().getX() == 0.0) {
+					if (wantX - whereX > 0) { //droite
+						go.getVelocity().add(0.05,0.0);
+					} else { //gauche
+						System.out.println("couisckosdf");
+						go.getVelocity().subtract(0.05,0.0);
+					}
+				}	
+//				if (whereY != wantY  && go.getVelocity().getY() == 0.0) {
+//					if (wantY - whereY > 0) { //droite
+//						go.getVelocity().add(0.0,0.05);
+//					} else { //gauche
+//						go.getVelocity().subtract(0.00,0.05);
+//					}
+//				}	
+
+				if (whereX >= wantX) {
+					if (go.getVelocity().getX() > 0.0) {
+						System.out.println("stop");
+						go.getVelocity().subtract(0.05,0.0);
+					} else if (go.getVelocity().getX() < 0.0) {
+						System.out.println("stop1");
+						go.getVelocity().add(0.05,0.0);
+					}
+				}
+			}
+			
+			@Override
+			public void onEnd() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onBegin() {
+			}
+		};
 		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
 		gc = BuilderGameObject.createGameObject()
 				.with(d)
@@ -90,8 +138,8 @@ public class RimWorldGame extends GameApp {
 				.with(BuilderEntities.createPersonnage()
 						.with(new ID())
 						.with(new Gear())
-						.addRessource()
-						);
+						)
+				.addTask(t);
 		Personnage p = (Personnage) gc.getObject();
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
 			@Override
@@ -162,7 +210,7 @@ public class RimWorldGame extends GameApp {
 			}
 			@Override
 			public void onEnd() {
-				gc.getVelocity().sub(-0.05,0.0);
+				gc.getVelocity().subtract(-0.05,0.0);
 			}
 			@Override
 			public void onBegin() {
@@ -175,7 +223,7 @@ public class RimWorldGame extends GameApp {
 			}
 			@Override
 			public void onEnd() {
-				gc.getVelocity().sub(0.0,0.05);
+				gc.getVelocity().subtract(0.0,0.05);
 			}
 			@Override
 			public void onBegin() {
@@ -188,7 +236,7 @@ public class RimWorldGame extends GameApp {
 			}
 			@Override
 			public void onEnd() {
-				gc.getVelocity().sub(0.05,0.0);
+				gc.getVelocity().subtract(0.05,0.0);
 			}
 			@Override
 			public void onBegin() {
@@ -201,7 +249,7 @@ public class RimWorldGame extends GameApp {
 			}
 			@Override
 			public void onEnd() {
-				gc.getVelocity().sub(0.0,-0.05);
+				gc.getVelocity().subtract(0.0,-0.05);
 			}
 			@Override
 			public void onBegin() {
@@ -215,15 +263,15 @@ public class RimWorldGame extends GameApp {
 			@Override
 			public void onCollisionEnd(GameObject g1, GameObject g2) {
 				getManager().getParticuleEngine().removeEmitter(feu);
-				System.out.println("EN");
+				//System.out.println("EN");
 			}
 			@Override
 			public void onCollisionBegin(GameObject g1, GameObject g2) {
-				System.out.println("IN");
+				//System.out.println("IN");
 				getManager().getParticuleEngine().addEmitter(feu);
 				Material m = (Material) g1.getObject();
 				
-				System.out.println("dkjfhgfjdgkjdfhgkjdfhgkjdfhgkldhfkjghdfklghdfk"+m.getLife()+m.getSurface());
+				//System.out.println("dkjfhgfjdgkjdfhgkjdfhgkjdfhgkldhfkjghdfklghdfk"+m.getLife()+m.getSurface());
 			}
 			@Override
 			public void onCollision(GameObject g1, GameObject g2) {
