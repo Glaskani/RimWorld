@@ -12,7 +12,8 @@ import gameengine.entities.builder.BuilderGameObject;
 import gameengine.entities.builder.BuilderGameObjectFactory;
 import gameengine.entities.builder.WrapperGameObject;
 import gameengine.entities.texture.Texture;
-import gameengine.ia.ManagerTask;
+import gameengine.ia.TaskManager;
+import gameengine.ia.StateTask;
 import gameengine.ia.Task;
 import gameengine.input.UserEvent;
 import gameengine.particule.Emitter;
@@ -53,7 +54,7 @@ public class RimWorldGame extends GameApp {
 	}
 	
 	@Override
-	public void initGameObject(ManagerTask mt) {
+	public void initGameObject() {
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("0",new BuilderGameObjectFactory() {
 			@Override
 			public GameObject createGameObject() {
@@ -88,7 +89,7 @@ public class RimWorldGame extends GameApp {
 				GameObject go = this.getGameObject();
 				double whereX = go.getPosition().getX(); //4
 				double whereY = go.getPosition().getY();
-				double wantX = -8.0-0.05;
+				double wantX = 20.0-0.05;
 				double wantY = 3.0;						
 				System.out.println("velo"+go.getVelocity());
 				if (whereX != wantX  && go.getVelocity().getX() == 0.0) {
@@ -128,6 +129,7 @@ public class RimWorldGame extends GameApp {
 			public void onBegin() {
 			}
 		};
+		t.setStat(StateTask.CURRENT);
 		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
 		gc = BuilderGameObject.createGameObject()
 				.with(d)
@@ -278,5 +280,10 @@ public class RimWorldGame extends GameApp {
 				
 			}
 		});
+	}
+	@Override
+	public void initUI() {
+		// TODO Auto-generated method stub
+		
 	}
 }
