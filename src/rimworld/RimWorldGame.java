@@ -13,6 +13,7 @@ import gameengine.entities.builder.BuilderGameObjectFactory;
 import gameengine.entities.builder.WrapperGameObject;
 import gameengine.entities.texture.Texture;
 import gameengine.ia.TaskManager;
+import gameengine.ia.pathFinding.PathFinding;
 import gameengine.ia.StateTask;
 import gameengine.ia.Task;
 import gameengine.input.UserEvent;
@@ -162,6 +163,8 @@ public class RimWorldGame extends GameApp {
 	}
 	@Override
 	public void initTest() {
+		new PathFinding(gc, new Point2D(20.0,20.0),getGameWorld());
+		getGameEngine().stop();
 	}
 	public static void main(String[] args) {
 		launch(args);
