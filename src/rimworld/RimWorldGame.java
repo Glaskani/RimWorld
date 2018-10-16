@@ -163,7 +163,7 @@ public class RimWorldGame extends GameApp {
 	}
 	@Override
 	public void initTest() {
-		new PathFinding(gc, new Point2D(27.0,3.0),getGameWorld());
+		new PathFinding(gc, new Point2D(27.0,7.0),getGameWorld());
 		
 		getGameEngine().stop();
 	}
