@@ -1,10 +1,9 @@
 package rimworld;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
+import java.util.List;
 //import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
 import gameengine.app.GameApp;
 import gameengine.app.GameSetting;
 import gameengine.entities.GameObject;
@@ -12,10 +11,10 @@ import gameengine.entities.builder.BuilderGameObject;
 import gameengine.entities.builder.BuilderGameObjectFactory;
 import gameengine.entities.builder.WrapperGameObject;
 import gameengine.entities.texture.Texture;
-import gameengine.ia.TaskManager;
-import gameengine.ia.pathFinding.PathFinding;
 import gameengine.ia.StateTask;
 import gameengine.ia.Task;
+import gameengine.ia.pathFinding.Cell;
+import gameengine.ia.pathFinding.PathFinding;
 import gameengine.input.UserEvent;
 import gameengine.particule.Emitter;
 import gameengine.particule.FireEmitter;
@@ -130,6 +129,7 @@ public class RimWorldGame extends GameApp {
 			public void onBegin() {
 			}
 		};
+		
 		t.setStat(StateTask.CURRENT);
 		Dimension3D d = new Dimension3D(32.0, 32.0,32.0);
 		gc = BuilderGameObject.createGameObject()
@@ -141,8 +141,8 @@ public class RimWorldGame extends GameApp {
 				.with(BuilderEntities.createPersonnage()
 						.with(new ID())
 						.with(new Gear())
-						)
-				.addTask(t);
+						);
+//				.addTask(t);
 		Personnage p = (Personnage) gc.getObject();
 		BuilderLevel.addWrapperGameObject(new WrapperGameObject("3",new BuilderGameObjectFactory() {
 			@Override
@@ -163,9 +163,9 @@ public class RimWorldGame extends GameApp {
 	}
 	@Override
 	public void initTest() {
-		new PathFinding(gc, new Point2D(0.0,8.0),getGameWorld());
-		
-		getGameEngine().stop();
+		long time = System.currentTimeMillis();
+//		new PathFinding(gc, new Point2D(0.0,104.0),getGameWorld());
+		System.out.println("time:"+(System.currentTimeMillis()-time));
 	}
 	public static void main(String[] args) {
 		launch(args);
