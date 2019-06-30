@@ -45,6 +45,7 @@ public class RimWorldGame extends GameApp {
 		setting.setWidth(1720);
 		setting.setHeight(880);
 		setting.setTitle("Hello World!");
+		setting.setDebugWindows();
 	}
 	@Override
 	public void initLevel() {
@@ -61,7 +62,7 @@ public class RimWorldGame extends GameApp {
 				return BuilderGameObject.createGameObject()
 						.with(new Dimension3D(32.0, 32.0, 0.0))
 						.with(new Texture("57"))
-						.is("Test")
+						.is("BACK")
 						.with(3.0);
 			}
 		}));
@@ -72,7 +73,7 @@ public class RimWorldGame extends GameApp {
 				return BuilderGameObject.createGameObject()
 						.with(d1)
 						.with(new Texture("cactus"))
-						.is("test")
+						.is("WALL")
 						.with(4.0)
 						.with(new AABB(new Point3D(0.0, 0.0, 0.0),d1))
 						.with(BuilderEntities.createMaterial()
@@ -135,7 +136,7 @@ public class RimWorldGame extends GameApp {
 		gc = BuilderGameObject.createGameObject()
 				.with(d)
 				.with(new Texture("bonjour"))
-				.is("personnage")
+				.is("PERSO")
 				.with(4.0)
 				.with(new AABB(new Point3D(0.0, 0.0, 0.0),d))
 				.with(BuilderEntities.createPersonnage()
@@ -265,15 +266,15 @@ public class RimWorldGame extends GameApp {
 	}
 	@Override
 	public void initCollision() {
-		getGameEngine().getCm().addHandleCollision(new HandleCollision("test","personnage") {
+		getGameEngine().getCm().addHandleCollision(new HandleCollision("WALL", "PERSO") {
 			@Override
 			public void onCollisionEnd(GameObject g1, GameObject g2) {
 				getManager().getParticuleEngine().removeEmitter(feu);
-				//System.out.println("EN");
+				System.out.println("EN");
 			}
 			@Override
 			public void onCollisionBegin(GameObject g1, GameObject g2) {
-				//System.out.println("IN");
+				System.out.println("IN");
 				getManager().getParticuleEngine().addEmitter(feu);
 				Material m = (Material) g1.getObject();
 				
